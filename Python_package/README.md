@@ -33,7 +33,7 @@ from prg import prg
 import numpy as np
 labels = np.array([1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,1], dtype='int')
 scores = np.arange(1,26)[::-1]
-prg_curve = prg.create_prg_curve(labels, scores, create_crossing_points=True)
+prg_curve = prg.create_prg_curve(labels, scores)
 auprg = prg.calc_auprg(prg_curve)
 print(auprg)
 prg.plot_prg(prg_curve)

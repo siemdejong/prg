@@ -6,6 +6,7 @@ http://www.cs.bris.ac.uk/~flach/PRGcurves/.
 """
 
 from __future__ import division
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -67,16 +68,10 @@ def recall_gain(tp, fn, fp, tn):
     return rg
 
 
-def sort_scores(pos_scores, neg_scores):
-    to_sort = np.array([1.0-pos_scores, -neg_scores])
-    new_order = np.argsort(to_sort)[0]
-    return new_order
-
-
 def create_segments(labels, pos_scores, neg_scores):
     n = np.alen(labels)
     # reorder labels and pos_scores by decreasing pos_scores, using increasing neg_scores in breaking ties
-    new_order = sort_scores(pos_scores, neg_scores)
+    new_order = np.lexsort((neg_scores, -pos_scores))
     labels = labels[new_order]
     pos_scores = pos_scores[new_order]
     neg_scores = neg_scores[new_order]
@@ -118,7 +113,7 @@ def insert_point(new_point, key_indices, points, precision_gain=0,
     points['precision_gain'][0] = precision_gain
     points['recall_gain'][0] = recall_gain
     points['is_crossing'][0] = is_crossing
-    new_order = sort_scores(points['pos_score'], points['neg_score'])
+    new_order = np.lexsort((-points['precision_gain'],points['recall_gain']))
     for key in points.keys():
         points[key] = points[key][new_order]
     return points
@@ -138,7 +133,9 @@ def _create_crossing_points(points, n_pos, n_neg):
         else:
             alpha = 0.5
 
-        new_point = point_2 + alpha*delta
+	with warnings.catch_warnings():
+	  warnings.simplefilter("ignore")
+          new_point = point_2 + alpha*delta
 
         new_prec_gain = precision_gain(new_point[key_indices_1['TP']], new_point[key_indices_1['FN']],
                                        new_point[key_indices_1['FP']], new_point[key_indices_1['TN']])
@@ -163,7 +160,10 @@ def _create_crossing_points(points, n_pos, n_neg):
         else:
             alpha = (n_neg / n_pos * points['TP'][i-1] - points['FP'][i-1]) / delta[key_indices_1['FP']]
 
-        new_point = point_2 + alpha*delta
+	with warnings.catch_warnings():
+	  warnings.simplefilter("ignore")
+          new_point = point_2 + alpha*delta
+
         new_rec_gain = recall_gain(new_point[key_indices_1['TP']], new_point[key_indices_1['FN']],
                                    new_point[key_indices_1['FP']], new_point[key_indices_1['TN']])
         points = insert_point(new_point, key_indices_1, points,
@@ -178,12 +178,12 @@ def _create_crossing_points(points, n_pos, n_neg):
     return points
 
 
-def create_prg_curve(labels, pos_scores, neg_scores=[],
-                        create_crossing_points=True):
+def create_prg_curve(labels, pos_scores, neg_scores=[]):
     """Precision-Recall-Gain curve
     
     This function creates the Precision-Recall-Gain curve from the vector of labels and vector of scores where higher score indicates a higher probability to be positive. More information on Precision-Recall-Gain curves and how to cite this work is available at http://www.cs.bris.ac.uk/~flach/PRGcurves/.
     """
+    create_crossing_points = True # do it always because calc_auprg otherwise gives the wrong result
     if np.alen(neg_scores) == 0:
         neg_scores = -pos_scores
     n = np.alen(labels)
@@ -323,7 +323,7 @@ def plot_prg(prg_curve,show_convex_hull=True,show_f_calibrated_scores=False):
     plt.xlabel('Recall Gain')
     plt.ylabel('Precision Gain')
 
-    valid_points = np.logical_and(True - np.isnan(rg), True - np.isnan(pg))
+    valid_points = np.logical_and( ~ np.isnan(rg), ~ np.isnan(pg))
     upper_hull = convex_hull(zip(rg[valid_points],pg[valid_points]))
     rg_hull, pg_hull = zip(*upper_hull)
     if show_convex_hull:
@@ -364,7 +364,7 @@ def test():
     labels = np.array([1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,1], dtype='int')
     scores = np.around(np.log(np.arange(1,26)[::-1]),1)
     scores = np.arange(1,26)[::-1]
-    prg_curve = create_prg_curve(labels, scores, create_crossing_points=True)
+    prg_curve = create_prg_curve(labels, scores)
     auprg = calc_auprg(prg_curve)
     plot_prg(prg_curve)
 
