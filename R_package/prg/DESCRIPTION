@@ -1,6 +1,6 @@
 Package: prg
 Title: Creates the Precision-Recall-Gain curve and calculates the area under the curve
-Version: 0.5.0
+Version: 0.5.1
 Authors@R: c(
     person("Meelis", "Kull", email = "meelis.kull@gmail.com", role = c("aut", "cre")),
     person("Peter", "Flach", email = "peter.flach@bristol.ac.uk", role = c("aut")))

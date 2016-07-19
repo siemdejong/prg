@@ -130,9 +130,8 @@ recall_gain = function(TP,FN,FP,TN) {
 #' @param labels a vector of labels, where 1 marks positives and 0 or -1 marks negatives
 #' @param pos_scores vector of scores for the positive class, where a higher score indicates a higher probability to be a positive
 #' @param neg_scores vector of scores for the negative class, where a higher score indicates a higher probability to be a negative (by default, equal to -pos_scores)
-#' @param create_crossing_points whether to create crossing points where the curve crosses the x-axis or y-axis
-#' @return A data.frame which lists the points on the PRG curve with the following columns: pos_score, neg_score, TP, FP, FN, TN, precision_gain, recall_gain. Optionally, if create_crossing_points=TRUE, then there are two more columns: is_crossing and in_unit_square. All the points are listed in the order of increasing thresholds on the score to be positive (the ties are broken by decreasing thresholds on the score to be negative).
-#' @details The PRG-curve is built by considering all possible score thresholds, starting from -Inf and then using all scores that are present in the given data. The results are presented as a data.frame which includes the following columns: pos_score, neg_score, TP, FP, FN, TN, precision_gain, recall_gain. Optionally, if create_crossing_points=TRUE, then there are two more columns: is_crossing and in_unit_square. If create_crossing_points=TRUE, then the resulting points additionally include the points where the PRG curve crosses the y-axis and the positive half of the x-axis. The added points have is_crossing=1 whereas the actual PRG points have is_crossing=0. To help in visualisation and calculation of the area under the curve the value in_unit_square=1 marks that the point is within the unit square [0,1]x[0,1], and otherwise, in_unit_square=0.
+#' @return A data.frame which lists the points on the PRG curve with the following columns: pos_score, neg_score, TP, FP, FN, TN, precision_gain, recall_gain, is_crossing and in_unit_square. All the points are listed in the order of increasing thresholds on the score to be positive (the ties are broken by decreasing thresholds on the score to be negative).
+#' @details The PRG-curve is built by considering all possible score thresholds, starting from -Inf and then using all scores that are present in the given data. The results are presented as a data.frame which includes the following columns: pos_score, neg_score, TP, FP, FN, TN, precision_gain, recall_gain, is_crossing and in_unit_square. The resulting points include the points where the PRG curve crosses the y-axis and the positive half of the x-axis. The added points have is_crossing=1 whereas the actual PRG points have is_crossing=0. To help in visualisation and calculation of the area under the curve the value in_unit_square=1 marks that the point is within the unit square [0,1]x[0,1], and otherwise, in_unit_square=0.
 #' @examples
 #' create_prg_curve(c(1,1,0,0,1,0),c(0.8,0.8,0.6,0.4,0.4,0.2))
 #' #   pos_score neg_score  TP FP  FN TN precision_gain recall_gain is_crossing in_unit_square
@@ -143,14 +142,6 @@ recall_gain = function(TP,FN,FP,TN) {
 #' # 5       0.4      -0.4 3.0  2 0.0  1      0.3333333         1.0           0              1
 #' # 6       0.2      -0.2 3.0  3 0.0  0      0.0000000         1.0           0              1
 #'
-#' create_prg_curve(c(1,1,0,0,1,0),c(0.8,0.8,0.6,0.4,0.4,0.2),create_crossing_points=FALSE)
-#' #   pos_score neg_score TP FP FN TN precision_gain recall_gain
-#' # 1      -Inf       Inf  0  0  3  3            NaN        -Inf
-#' # 2       0.8      -0.8  2  0  1  3      1.0000000         0.5
-#' # 3       0.6      -0.6  2  1  1  2      0.5000000         0.5
-#' # 4       0.4      -0.4  3  2  0  1      0.3333333         1.0
-#' # 5       0.2      -0.2  3  3  0  0      0.0000000         1.0
-#'
 #' create_prg_curve(c(1,1,0,0,1,0),c(1,1,1,1e-20,1e-40,1e-60),c(0,1e-20,1e-20,1,1,1))
 #' #   pos_score neg_score  TP  FP  FN  TN precision_gain recall_gain is_crossing in_unit_square
 #' # 1      -Inf       Inf 0.0 0.0 3.0 3.0            NaN        -Inf           0              0
@@ -160,7 +151,8 @@ recall_gain = function(TP,FN,FP,TN) {
 #' # 5     1e-20     1e+00 2.0 2.0 1.0 1.0      0.0000000         0.5           0              1
 #' # 6     1e-40     1e+00 3.0 2.0 0.0 1.0      0.3333333         1.0           0              1
 #' # 7     1e-60     1e+00 3.0 3.0 0.0 0.0      0.0000000         1.0           0              1
-create_prg_curve = function(labels,pos_scores,neg_scores=-pos_scores,create_crossing_points=TRUE) {
+create_prg_curve = function(labels,pos_scores,neg_scores=-pos_scores) { 
+  create_crossing_points = TRUE
   n = length(labels)
   n_pos = sum(labels)
   n_neg = n - n_pos
