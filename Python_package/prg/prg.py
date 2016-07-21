@@ -371,6 +371,7 @@ def plot_pr(prg_curve):
     plt.ylabel('Precision')
 
     plt.show()
+    return fig
 
 
 def test():
