@@ -26,10 +26,10 @@ pip install pyprg
 
 ### Usage
 
-Detailed information about the usage can be seen in the manual pages of the individual functions, e.g. by typing `?prg.create_prg_curve` after importing with `from prg import prg`.
+Detailed information about the usage can be seen in the manual pages of the individual functions, e.g. by typing `?prg.create_prg_curve` after importing with `import prg`.
 The example usage is as follows:
 ```Python
-from prg import prg
+import prg
 import numpy as np
 labels = np.array([1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,1], dtype='int')
 scores = np.arange(1,26)[::-1]
