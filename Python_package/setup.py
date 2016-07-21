@@ -16,7 +16,7 @@ with open('README.rst') as file:
 
 setup(
     name='pyprg',
-    version='0.1.1b3',
+    version='0.1.1b4',
     description='Creates the Precision-Recall-Gain curve and calculates the area under the curve',
 #    long_description=read_md('README.md'),
     long_description=long_description,
