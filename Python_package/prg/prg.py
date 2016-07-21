@@ -181,7 +181,11 @@ def _create_crossing_points(points, n_pos, n_neg):
 def create_prg_curve(labels, pos_scores, neg_scores=[]):
     """Precision-Recall-Gain curve
 
-    This function creates the Precision-Recall-Gain curve from the vector of labels and vector of scores where higher score indicates a higher probability to be positive. More information on Precision-Recall-Gain curves and how to cite this work is available at http://www.cs.bris.ac.uk/~flach/PRGcurves/.
+    This function creates the Precision-Recall-Gain curve from the vector of
+    labels and vector of scores where higher score indicates a higher
+    probability to be positive. More information on Precision-Recall-Gain
+    curves and how to cite this work is available at
+    http://www.cs.bris.ac.uk/~flach/PRGcurves/.
     """
     create_crossing_points = True # do it always because calc_auprg otherwise gives the wrong result
     if np.alen(neg_scores) == 0:
@@ -276,19 +280,27 @@ def convex_hull(points):
     return upper
 
 
-#' Plot the Precision-Recall-Gain curve
-#'
-#' This function plots the Precision-Recall-Gain curve resulting from the function create_prg_curve using ggplot. More information on Precision-Recall-Gain curves and how to cite this work is available at http://www.cs.bris.ac.uk/~flach/PRGcurves/.
-#' @param prg_curve the data structure resulting from the function create_prg_curve
-#' @param show_convex_hull whether to show the convex hull (default: TRUE)
-#' @param show_f_calibrated_scores whether to show the F-calibrated scores (default:TRUE)
-#' @return the ggplot object which can be plotted using print()
-#' @details This function plots the Precision-Recall-Gain curve, indicating for each point whether it is a crossing-point or not (see help on create_prg_curve). By default, only the part of the curve within the unit square [0,1]x[0,1] is plotted.
-#' @examples
-#' labels = c(1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,1)
-#' scores = (25:1)/25
-#' plot_prg(create_prg_curve(labels,scores))
 def plot_prg(prg_curve,show_convex_hull=True,show_f_calibrated_scores=False):
+    """Plot the Precision-Recall-Gain curve
+
+    This function plots the Precision-Recall-Gain curve resulting from the
+    function create_prg_curve using ggplot. More information on
+    Precision-Recall-Gain curves and how to cite this work is available at
+    http://www.cs.bris.ac.uk/~flach/PRGcurves/.
+
+    @param prg_curve the data structure resulting from the function create_prg_curve
+    @param show_convex_hull whether to show the convex hull (default: TRUE)
+    @param show_f_calibrated_scores whether to show the F-calibrated scores (default:TRUE)
+    @return the ggplot object which can be plotted using print()
+    @details This function plots the Precision-Recall-Gain curve, indicating
+        for each point whether it is a crossing-point or not (see help on
+        create_prg_curve). By default, only the part of the curve
+        within the unit square [0,1]x[0,1] is plotted.
+    @examples
+        labels = c(1,1,1,0,1,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,1,0,1)
+        scores = (25:1)/25
+        plot_prg(create_prg_curve(labels,scores))
+    """
     pg = prg_curve['precision_gain']
     rg = prg_curve['recall_gain']
 
@@ -331,6 +343,7 @@ def plot_prg(prg_curve,show_convex_hull=True,show_f_calibrated_scores=False):
     if show_f_calibrated_scores:
         raise Exception("Show calibrated scores not implemented yet")
     plt.show()
+    return fig
 
 
 def plot_pr(prg_curve):
