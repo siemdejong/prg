@@ -133,9 +133,9 @@ def _create_crossing_points(points, n_pos, n_neg):
         else:
             alpha = 0.5
 
-	with warnings.catch_warnings():
-	  warnings.simplefilter("ignore")
-          new_point = point_2 + alpha*delta
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            new_point = point_2 + alpha*delta
 
         new_prec_gain = precision_gain(new_point[key_indices_1['TP']], new_point[key_indices_1['FN']],
                                        new_point[key_indices_1['FP']], new_point[key_indices_1['TN']])
@@ -160,9 +160,9 @@ def _create_crossing_points(points, n_pos, n_neg):
         else:
             alpha = (n_neg / n_pos * points['TP'][i-1] - points['FP'][i-1]) / delta[key_indices_1['FP']]
 
-	with warnings.catch_warnings():
-	  warnings.simplefilter("ignore")
-          new_point = point_2 + alpha*delta
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            new_point = point_2 + alpha*delta
 
         new_rec_gain = recall_gain(new_point[key_indices_1['TP']], new_point[key_indices_1['FN']],
                                    new_point[key_indices_1['FP']], new_point[key_indices_1['TN']])
@@ -180,7 +180,7 @@ def _create_crossing_points(points, n_pos, n_neg):
 
 def create_prg_curve(labels, pos_scores, neg_scores=[]):
     """Precision-Recall-Gain curve
-    
+
     This function creates the Precision-Recall-Gain curve from the vector of labels and vector of scores where higher score indicates a higher probability to be positive. More information on Precision-Recall-Gain curves and how to cite this work is available at http://www.cs.bris.ac.uk/~flach/PRGcurves/.
     """
     create_crossing_points = True # do it always because calc_auprg otherwise gives the wrong result
@@ -207,14 +207,14 @@ def create_prg_curve(labels, pos_scores, neg_scores=[]):
     if create_crossing_points == True:
         points = _create_crossing_points(points, n_pos, n_neg)
     else:
-       points['pos_score'] = points['pos_score'][1:]
-       points['neg_score'] = points['neg_score'][1:]
-       points['TP'] = points['TP'][1:]
-       points['FP'] = points['FP'][1:]
-       points['FN'] = points['FN'][1:]
-       points['TN'] = points['TN'][1:]
-       points['precision_gain'] = points['precision_gain'][1:]
-       points['recall_gain'] = points['recall_gain'][1:]
+        points['pos_score'] = points['pos_score'][1:]
+        points['neg_score'] = points['neg_score'][1:]
+        points['TP'] = points['TP'][1:]
+        points['FP'] = points['FP'][1:]
+        points['FN'] = points['FN'][1:]
+        points['TN'] = points['TN'][1:]
+        points['precision_gain'] = points['precision_gain'][1:]
+        points['recall_gain'] = points['recall_gain'][1:]
     with np.errstate(invalid='ignore'):
         points['in_unit_square'] = np.logical_and(points['recall_gain'] >= 0,
                                               points['precision_gain'] >= 0)
@@ -240,7 +240,7 @@ def calc_auprg(prg_curve):
     return(area)
 
 
-# from 
+# from
 def convex_hull(points):
     """Computes the convex hull of a set of 2D points.
 
