@@ -10,12 +10,12 @@ import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 
-def precision(tp, tn, fp, fn):
+def precision(tp, fn, fp, tn):
     with np.errstate(divide='ignore', invalid='ignore'):
         return tp/(tp + fp)
 
 
-def recall(tp, tn, fp, fn):
+def recall(tp, fn, fp, tn):
     with np.errstate(divide='ignore', invalid='ignore'):
         return tp/(tp + fn)
 
