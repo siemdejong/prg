@@ -33,7 +33,7 @@ def precision_gain(tp, fn, fp, tn):
     n_neg = fp + tn
     with np.errstate(divide='ignore', invalid='ignore'):
         prec_gain = 1. - (n_pos/n_neg) * (fp/tp)
-    if len(prec_gain) > 1:
+    if not isinstance(prec_gain, float):
         prec_gain[tn + fn == 0] = 0
     elif tn + fn == 0:
         prec_gain = 0
@@ -61,7 +61,7 @@ def recall_gain(tp, fn, fp, tn):
     n_neg = fp + tn
     with np.errstate(divide='ignore', invalid='ignore'):
         rg = 1. - (n_pos/n_neg) * (fn/tp)
-    if len(rg) > 1:
+    if not isinstance(rg, float):
         rg[tn + fn == 0] = 1
     elif tn + fn == 0:
         rg = 1
